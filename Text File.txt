@@ -1,0 +1,2 @@
+emcc zlibtool.c libz.a -o zlib.html
+
