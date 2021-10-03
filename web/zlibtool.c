@@ -183,7 +183,7 @@ int main(int argc, char **argv)
     FILE *outputFile;
 
     if (argc == 1) {
-        printf("zlibtool usage: zpipe [-d/-c] inputFile outputFile\n");
+        printf("zlibtool usage: zpipe1 [-d/-c] inputFile outputFile\n");
         return 1;
     }
 
@@ -236,7 +236,8 @@ int main(int argc, char **argv)
         return ret;
     }
     else {
-        fputs("zlibtool usage: zpipe [-d/-c] inputFile outputFile\n", stderr);
+        printf("argc is: %d \n", argc);
+        fputs("zlibtool usage: zpipe2 [-d/-c] inputFile outputFile\n", stderr);
         fclose(inputFile);
         fclose(outputFile);
         return 1;

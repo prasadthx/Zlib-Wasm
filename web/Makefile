@@ -3,7 +3,9 @@ CC=emcc
 all: zlibtool.html
 
 zlibtool.html: zlibtool.o libz.a
-		$(CC) zlibtool.o libz.a -o zlibtool.html
+		$(CC) zlibtool.o libz.a -o zlibtool.html \
+		-s EXPORTED_RUNTIME_METHODS="['callMain']" \
+	-s EXPORTED_FUNCTIONS="['_main']" \
 
 zlibtool.o: zlibtool.c
 		$(CC) -c zlibtool.c -o zlibtool.o
