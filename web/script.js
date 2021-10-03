@@ -23,6 +23,7 @@
 
 const downloadFile = (filename, text) => {
     var element = document.createElement('a');
+    console.log("Downloaded " + filename);
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
   
@@ -30,6 +31,8 @@ const downloadFile = (filename, text) => {
     document.body.appendChild(element);
   
     element.click();
+
+    console.log("Downloaded " + filename);
   
     document.body.removeChild(element);
   }
@@ -49,7 +52,7 @@ const onCompressButtonPressed = () => {
     reader.readAsText(inputFile); 
     reader.onload = function () { 
       content = reader.result; 
-	  console.log(content); 
+	  //console.log(content); 
     } 
     // fetch(path).then( 
     //     (response) => {content = response.text;console.log(content);}
@@ -61,8 +64,9 @@ const onCompressButtonPressed = () => {
             true, // read
             true // write
         );
-    Module.callMain(["-c", inputFile.name, "example.z", "9"])
-    downloadFile("example.z", FS.)
+    Module.callMain(["-c", inputFile.name, `${inputFile.name}.z`, "9"])
+    content = FS.readFile(`${inputFile.name}.z`);
+    downloadFile(`${inputFile.name}.z`, content);
 }
 
 async function btnClick() {
