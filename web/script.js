@@ -86,8 +86,8 @@ const onCompressButtonPressed = () => {
         
             Module.callMain(["-c", inputFile.name, inputFile.name + ".z", 9]);
             //console.log(fileContent);
-            //content = FS.readFile( inputFile.name.split(".z")[0] );
-            //downloadFile( inputFile.name.split(".z")[0] , content);
+            //content = FS.readFile( inputFile.name );
+            //downloadFile( inputFile.name , content);
         }
     }
     xhr.open('GET', inputFileURL, true);
@@ -121,7 +121,7 @@ const onDecompressButtonPressed = () => {
     // FS.close();
 
     let xhr = new XMLHttpRequest();
-    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+    xhr.overrideMimeType("application/x-compress; charset=x-user-defined");
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             fileContent = xhr.response;
@@ -140,7 +140,7 @@ const onDecompressButtonPressed = () => {
         }
     }
     xhr.open('GET', inputFileURL, true);
-    xhr.send('');
+    xhr.send();
 
 }
 

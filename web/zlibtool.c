@@ -189,6 +189,7 @@ int main(int argc, char **argv)
     int compressionLevel;
     FILE *inputFile; 
     FILE *outputFile;
+    FILE *exampleFile = fopen("example.txt", "w+");
 
     if (argc == 1) {
         printf("zlibtool usage: zpipe1 [-d/-c] inputFile outputFile\n");
@@ -201,7 +202,7 @@ int main(int argc, char **argv)
 
     if (argc == 4 || argc == 5){
         inputFile = fopen(argv[2], "rb");
-        outputFile = fopen(argv[3], "wb");
+        outputFile = fopen(argv[3], "wb+");
     }
    
     /* avoid end-of-line conversions */
@@ -228,9 +229,31 @@ int main(int argc, char **argv)
 
     if (argc == 5 && strcmp(argv[1],"-c") == 0){
         ret = def(inputFile, outputFile, compressionLevel);
-        EM_ASM_({ window.download($0, $1, $2) }, argv[3], outputFile, getFileSize(outputFile));
+        // fclose(inputFile);
+        // fclose(outputFile);
+        // inputFile = fopen(argv[2], "r");
+        //outputFile = fopen(argv[3], "r");
+        char *input = malloc(getFileSize(inputFile));
+        fread(input, 1, getFileSize(inputFile), inputFile);
+        char *output = malloc(getFileSize(outputFile));
+        fread(output, 1, getFileSize(outputFile), outputFile);
+        // char c;
+        // char *temp;
+        // while((c=fgetc(inputFile))!=EOF){
+        //     temp = (char *) malloc(sizeof(char));
+        //     strcpy(temp, c);
+		//     strcat(input, temp);
+        //     free(temp);
+        // }
+        // strcat(input, fscanf(inputFile, "%s", input));
+        printf("Length through strlen is %lu \n", strlen(output)); 
+        printf("Length through binary is %d \n", getFileSize(outputFile));   
+        // fputs("Hello World", exampleFile);
+        EM_ASM_({ window.download($0, $1, $2) }, argv[2], input, strlen(input));
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, getFileSize(outputFile));
         fclose(inputFile);
         fclose(outputFile);
+        fclose(exampleFile);
         if (ret != Z_OK)
             zerr(ret);
         return ret;
@@ -238,7 +261,15 @@ int main(int argc, char **argv)
 
     else if (argc == 4 && strcmp(argv[1],"-d") == 0) {
         ret = inf(inputFile, outputFile);
-        EM_ASM_({ window.download($0, $1, $2) }, argv[3], outputFile, getFileSize(outputFile));
+        //      fclose(inputFile);
+        // fclose(outputFile);
+        // inputFile = fopen(argv[2], "r");
+        // outputFile = fopen(argv[3], "w");
+        char *output = malloc(getFileSize(outputFile));
+        fread(output, 1, getFileSize(outputFile), outputFile);
+        printf("Length through strlen is %lu \n", strlen(output)); 
+        printf("Length through binary is %d \n", getFileSize(outputFile));  
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, getFileSize(outputFile));
         fclose(inputFile);
         fclose(outputFile);
         if (ret != Z_OK)
