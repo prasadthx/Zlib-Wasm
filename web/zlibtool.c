@@ -210,7 +210,7 @@ int main(int argc, char **argv)
     // Case For Compression
     if (argc == 5 && strcmp(argv[1],"-c") == 0){
         ret = def(inputFile, outputFile, compressionLevel);
-        
+       
         int outputFileLength = getFileSize(outputFile);                                     // Getting output file Size in bytes.
         char *output = malloc(outputFileLength);                                            // Setting a variable to copy the file contents
         fread(output, 1, outputFileLength, outputFile);                                     // Copying the file contents into the character array buffer.

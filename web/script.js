@@ -19,7 +19,7 @@ const onCompressButtonPressed = () => {
                 true // write
             );
         
-            Module.callMain(["-c", inputFile.name, inputFile.name + ".z", 9]);      // Calling the main() method of the C code.
+            Module.callMain(["-c", inputFile.name, inputFile.name + ".z", "9"]);      // Calling the main() method of the C code.
            
         }
     }
