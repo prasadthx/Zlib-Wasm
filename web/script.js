@@ -44,33 +44,104 @@ const downloadFile = (filename, text) => {
 // }
 
 const onCompressButtonPressed = () => {
-    let inputFile = document.getElementById("inputFile").files[0];
+    let inputFile = document.getElementById("c_inputFile").files[0];
     console.log(inputFile);
-    let content;
+    let fileContent;
     
-    let reader = new FileReader(); 
-    reader.readAsText(inputFile); 
-    reader.onload = function () { 
-      content = reader.result; 
-	  //console.log(content); 
-    } 
+    // let reader = new FileReader(); 
+    // reader.readAsText(inputFile); 
+    // reader.onload = function () { 
+    //   content = reader.result; 
+	//   //console.log(content); 
+    // } 
+
+    const inputFileURL = URL.createObjectURL(inputFile)
     // fetch(path).then( 
     //     (response) => {content = response.text;console.log(content);}
     // )
-    FS.createDataFile(
-            "/", // folder 
-            inputFile.name, // filename
-            `${content}`, // content
-            true, // read
-            true // write
-        );
-    Module.callMain(["-c", inputFile.name, `${inputFile.name}.z`, "9"])
-    content = FS.readFile(`${inputFile.name}.z`);
-    downloadFile(`${inputFile.name}.z`, content);
+    // FS.createDataFile(
+    //         "/", // folder 
+    //         inputFile.name, // filename
+    //         `${content}`, // content
+    //         true, // read
+    //         true // write
+    //     );
+    // Module.callMain(["-c", inputFile.name, `${inputFile.name}.z`, "9"])
+    // content = FS.readFile(`${inputFile.name}.z`);
+    // downloadFile(`${inputFile.name}.z`, content);
+
+
+    let xhr = new XMLHttpRequest();
+    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            fileContent = xhr.response;
+            FS.createDataFile(
+                "/", // folder 
+                inputFile.name, // filename
+                fileContent, // content
+                true, // read
+                true // write
+            );
+        
+            Module.callMain(["-c", inputFile.name, inputFile.name + ".z", 9]);
+            //console.log(fileContent);
+            //content = FS.readFile( inputFile.name.split(".z")[0] );
+            //downloadFile( inputFile.name.split(".z")[0] , content);
+        }
+    }
+    xhr.open('GET', inputFileURL, true);
+    xhr.send('');
 }
 
-async function btnClick() {
-    Module.callMain(["book1.xls"]);
+const onDecompressButtonPressed = () => {
+    let inputFile = document.getElementById("d_inputFile").files[0];
+    console.log(inputFile);
+    let fileContent;
+    
+    // let reader = new FileReader(); 
+    // reader.readAsText(inputFile); 
+    // reader.onload = function () { 
+    //   content = reader.result; 
+	//   //console.log(content); 
+    // } 
+    const inputFileURL = URL.createObjectURL(inputFile)
+
+    // let responseText = await $.ajax({
+    //     url: inputFileURL,
+    //     beforeSend: function (xhr) {
+    //         xhr.overrideMimeType("text/plain; charset=x-user-defined");
+    //     }
+    // });
+
+    //fetch(inputFileURL).then((response) => console.log(response));
+
+    // FS.open(`/${inputFile.name}`, "w+");
+    // FS.writeFile(`/${inputFile.name}`, content);
+    // FS.close();
+
+    let xhr = new XMLHttpRequest();
+    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            fileContent = xhr.response;
+            FS.createDataFile(
+                "/", // folder 
+                inputFile.name, // filename
+                fileContent, // content
+                true, // read
+                true // write
+            );
+        
+            Module.callMain(["-d", inputFile.name, inputFile.name.split(".z")[0] ]);
+            //console.log(fileContent);
+            //content = FS.readFile( inputFile.name.split(".z")[0] );
+            //downloadFile( inputFile.name.split(".z")[0] , content);
+        }
+    }
+    xhr.open('GET', inputFileURL, true);
+    xhr.send('');
+
 }
 
 // window["Module"] = {

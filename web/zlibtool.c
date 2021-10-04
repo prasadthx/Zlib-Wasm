@@ -13,6 +13,7 @@
  */
 
 #include <stdio.h>
+#include <emscripten.h>
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -173,6 +174,13 @@ void zerr(int ret)
     }
 }
 
+int getFileSize(FILE *file){
+    fseek(file, 0, SEEK_END); // seek to end of file
+    int size = ftell(file); // get current file pointer
+    fseek(file, 0, SEEK_SET); // seek back to beginning of file
+    return size; // return
+}
+
 /* compress or decompress from stdin to stdout */
 int main(int argc, char **argv)
 {
@@ -220,6 +228,7 @@ int main(int argc, char **argv)
 
     if (argc == 5 && strcmp(argv[1],"-c") == 0){
         ret = def(inputFile, outputFile, compressionLevel);
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], outputFile, getFileSize(outputFile));
         fclose(inputFile);
         fclose(outputFile);
         if (ret != Z_OK)
@@ -229,6 +238,7 @@ int main(int argc, char **argv)
 
     else if (argc == 4 && strcmp(argv[1],"-d") == 0) {
         ret = inf(inputFile, outputFile);
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], outputFile, getFileSize(outputFile));
         fclose(inputFile);
         fclose(outputFile);
         if (ret != Z_OK)

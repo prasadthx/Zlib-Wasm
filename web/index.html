@@ -22,7 +22,7 @@
           <h1>Compress</h1>
       </div>
       <div>
-          <input id="inputFile" type="file"/>
+          <input id="c_inputFile" type="file"/>
           <input type="number" id="compressionLevel" name="compressionLevel" min="-1" max="9">
           <button onclick="onCompressButtonPressed()">Compress</button>
       </div>
@@ -33,12 +33,13 @@
           <h1>Decompress</h1>
       </div>
       <div>
-        <input id="inputFile" type="file"/>
-        <button>Decompress</button>
+        <input id="d_inputFile" type="file"/>
+        <button onclick="onDecompressButtonPressed()">Decompress</button>
       </div>
     </section>
 
     <script src="script.js"></script>
     <script src="./zlibtool.js"></script>
+    <script src="./download.js"></script>
   </body>
 </html>

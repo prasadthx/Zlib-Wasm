@@ -2,8 +2,8 @@ CC=emcc
 
 all: zlibtool.html
 
-zlibtool.html: zlibtool.o libz.a
-		$(CC) zlibtool.o libz.a -o zlibtool.html \
+zlibtool.html: download.js zlibtool.o libz.a 
+		$(CC) --pre-js download.js zlibtool.o libz.a -o zlibtool.html \
 		-s EXPORTED_RUNTIME_METHODS="['callMain']" \
 	-s EXPORTED_FUNCTIONS="['_main']" \
 
