@@ -189,87 +189,49 @@ int main(int argc, char **argv)
     int compressionLevel;
     FILE *inputFile; 
     FILE *outputFile;
-    FILE *exampleFile = fopen("example.txt", "w+");
 
+    // If no argument is provided
     if (argc == 1) {
-        printf("zlibtool usage: zpipe1 [-d/-c] inputFile outputFile\n");
+        printf("zlibtool usage: zlibtool [-d/-c] inputFile outputFile\n");
         return 1;
     }
 
+    // If 5 arguments are provided, the functionality is compression, so taking compressionLevel as input
     if (argc == 5) {
         compressionLevel = atoi(argv[4]);
     }
 
+    // If 4 or 5 arguments are provided, the functionality is decompression or compression. 
     if (argc == 4 || argc == 5){
         inputFile = fopen(argv[2], "rb");
         outputFile = fopen(argv[3], "wb+");
     }
-   
-    /* avoid end-of-line conversions */
-    SET_BINARY_MODE(stdin);
-    SET_BINARY_MODE(stdout);
 
-    /* do compression if no arguments */
-    // if (argc == 1) {
-    //     ret = def(stdin, stdout, 9);
-    //     if (ret != Z_OK)
-    //         zerr(ret);
-    //     return ret;
-    // }
-
-    // /* do decompression if -d specified */
-    // else if (argc == 2 && strcmp(argv[1], "-d") == 0) {
-    //     ret = inf(stdin, stdout);
-    //     if (ret != Z_OK)
-    //         zerr(ret);
-    //     return ret;
-    // }
-
-    /* otherwise, report usage */
-
+    // Case For Compression
     if (argc == 5 && strcmp(argv[1],"-c") == 0){
         ret = def(inputFile, outputFile, compressionLevel);
-        // fclose(inputFile);
-        // fclose(outputFile);
-        // inputFile = fopen(argv[2], "r");
-        //outputFile = fopen(argv[3], "r");
-        char *input = malloc(getFileSize(inputFile));
-        fread(input, 1, getFileSize(inputFile), inputFile);
-        char *output = malloc(getFileSize(outputFile));
-        fread(output, 1, getFileSize(outputFile), outputFile);
-        // char c;
-        // char *temp;
-        // while((c=fgetc(inputFile))!=EOF){
-        //     temp = (char *) malloc(sizeof(char));
-        //     strcpy(temp, c);
-		//     strcat(input, temp);
-        //     free(temp);
-        // }
-        // strcat(input, fscanf(inputFile, "%s", input));
-        printf("Length through strlen is %lu \n", strlen(output)); 
-        printf("Length through binary is %d \n", getFileSize(outputFile));   
-        // fputs("Hello World", exampleFile);
-        EM_ASM_({ window.download($0, $1, $2) }, argv[2], input, strlen(input));
-        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, getFileSize(outputFile));
+        
+        int outputFileLength = getFileSize(outputFile);                                     // Getting output file Size in bytes.
+        char *output = malloc(outputFileLength);                                            // Setting a variable to copy the file contents
+        fread(output, 1, outputFileLength, outputFile);                                     // Copying the file contents into the character array buffer.
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, outputFileLength);        // Downloading the file
+        
         fclose(inputFile);
         fclose(outputFile);
-        fclose(exampleFile);
         if (ret != Z_OK)
             zerr(ret);
         return ret;
     }
 
+    // Case For Decompression
     else if (argc == 4 && strcmp(argv[1],"-d") == 0) {
         ret = inf(inputFile, outputFile);
-        //      fclose(inputFile);
-        // fclose(outputFile);
-        // inputFile = fopen(argv[2], "r");
-        // outputFile = fopen(argv[3], "w");
-        char *output = malloc(getFileSize(outputFile));
-        fread(output, 1, getFileSize(outputFile), outputFile);
-        printf("Length through strlen is %lu \n", strlen(output)); 
-        printf("Length through binary is %d \n", getFileSize(outputFile));  
-        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, getFileSize(outputFile));
+        
+        int outputFileLength = getFileSize(outputFile);                                     // Getting output file Size in bytes.
+        char *output = malloc(outputFileLength);                                            // Setting a variable to copy the file contents
+        fread(output, 1, outputFileLength, outputFile);                                     // Copying the file contents into the character array buffer. 
+        EM_ASM_({ window.download($0, $1, $2) }, argv[3], output, outputFileLength);        // Downloading the file
+        
         fclose(inputFile);
         fclose(outputFile);
         if (ret != Z_OK)
@@ -278,7 +240,7 @@ int main(int argc, char **argv)
     }
     else {
         printf("argc is: %d \n", argc);
-        fputs("zlibtool usage: zpipe2 [-d/-c] inputFile outputFile\n", stderr);
+        fputs("zlibtool usage: zlibtool [-d/-c] inputFile outputFile\n", stderr);
         fclose(inputFile);
         fclose(outputFile);
         return 1;
